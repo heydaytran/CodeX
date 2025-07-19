@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lsg-api-QANAME
+  namespace: qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lsg-api-QANAME
+  template:
+    metadata:
+      labels:
+        app: lsg-api-QANAME
+    spec:
+      containers:
+        - name: lsg-api-QANAME
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+      imagePullSecrets:
+        - name: lsgacr

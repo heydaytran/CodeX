@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:5.0.10-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+  rmq:
+    image: rabbitmq:3.8.14-management-alpine
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  seq:
+    image: datalust/seq:latest
+    restart: always
+    ports:
+      - "5341:80"
+    environment:
+      ACCEPT_EULA: "Y"
+  postgres:
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

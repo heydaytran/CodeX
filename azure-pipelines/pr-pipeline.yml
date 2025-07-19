@@ -1,0 +1,36 @@
+trigger: none
+pr:
+  branches:
+    include:
+      - master
+      - workitem/*
+      - feature/*
+
+variables:
+  major: 0
+  minor: $[replace(replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/feature/', ''), 'refs/heads/workitem/', '')] # This only works for pr build triggers
+  patch: 0
+  build: $[counter(variables['minor'], 0)]
+  solutionPath: "src/WebApi"
+  IsRunningOnBuildServer: true
+
+stages:
+  - stage: Build
+    variables:
+      - group: NexusAPI_QA
+    displayName: "Build and Package"
+    jobs:
+      - job: Build
+        displayName: "Build Solution"
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: "sdk"
+              version: "9.x"
+              includePreviewVersions: true
+
+          - template: templates/build-solution.yml
+            parameters:
+              solutionPath: "$(solutionPath)"
+
+          # - template: templates/run-tests.yml

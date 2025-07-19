@@ -1,0 +1,113 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - src/*
+      - build/*
+      - tests/*
+
+parameters:
+  - name: major
+    displayName: Version.Major
+    type: number
+    default: 1
+  - name: minor
+    displayName: Version.Minor
+    type: number
+    default: 0
+  - name: patch
+    displayName: Version.Patch
+    type: number
+    default: 0
+
+variables:
+  acrName: "lsgacr"
+  aksResourceGroup: "lsg-aks-group"
+  aksClusterName: "lsg-aks"
+  dockerImage: "nexus-api"
+  solutionPath: "src/WebApi"
+  terraformWorkingDir: "infra"
+  build: $[counter(${{ parameters.minor }}, 0)]
+  imageTag: "1.0.$(Build.BuildId)" # Dynamically set the image tag
+
+name: ${{ parameters.major }}.${{ parameters.minor }}.${{ parameters.patch }}.$(build)
+
+stages:
+  - stage: Build
+    displayName: "Build and Package"
+    jobs:
+      - job: Build
+        displayName: "Build Application"
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: "sdk"
+              version: "9.x"
+              includePreviewVersions: true
+
+          - template: templates/set-variables.yml
+          - template: templates/build-solution.yml
+            parameters:
+              solutionPath: "$(solutionPath)"
+
+  - stage: Staging
+    displayName: "Deploy to Staging"
+    #dependsOn: QA
+    variables:
+      - group: NexusAPI_Staging
+    jobs:
+      - deployment: ApproveStaging
+        displayName: "Manual Approval for Staging"
+        environment: "Staging"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Approval required for Staging deployment"
+                  displayName: "Waiting for Approval"
+
+      - job: DeployToAKSStaging
+        displayName: "Deploy to AKS (Staging)"
+        dependsOn: ApproveStaging
+        condition: succeeded()
+        steps:
+          - template: templates/set-variables.yml
+          - template: templates/build-push-image.yml
+            parameters:
+              environment: "staging"
+          - template: templates/deploy-aks-staging.yml
+            parameters:
+              environment: "staging"
+
+  - stage: Production
+    displayName: "Deploy to Production"
+    dependsOn: Staging
+    condition: succeeded()
+    variables:
+      - group: NexusAPI_Production
+    jobs:
+      - deployment: ApproveProduction
+        displayName: "Manual Approval for Production"
+        environment: "Production"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Approval required for Production deployment"
+                  displayName: "Waiting for Approval"
+
+      - job: DeployToAKSProduction
+        displayName: "Deploy to AKS (Production)"
+        dependsOn: ApproveProduction
+        condition: succeeded()
+        steps:
+          - template: templates/set-variables.yml
+          - template: templates/build-push-image.yml
+            parameters:
+              environment: "production"
+          - template: templates/deploy-aks.yml
+            parameters:
+              environment: "production"

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Scripts\2025\07\2025-02-09-1310-create-common-schema.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="AspNetCore.HealthChecks.Azure.Storage.Queues" />
+	  <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" />
+	  <PackageReference Include="Database.Migrator" />
+	  <PackageReference Include="Database.Migrator.Postgres" />
+	  <PackageReference Include="FluentValidation" />
+	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+	  <PackageReference Include="Serilog" />
+	  <PackageReference Include="System.ServiceModel.Http" />
+	  <PackageReference Include="System.ServiceModel.NetTcp" />
+	  <PackageReference Include="System.ServiceModel.Primitives" />
+  </ItemGroup>
+
+</Project>

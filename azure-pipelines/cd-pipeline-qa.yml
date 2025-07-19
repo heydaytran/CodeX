@@ -1,0 +1,57 @@
+trigger:
+  - none
+
+parameters:
+  - name: testenvname
+    displayName: QA Environment Name
+    type: string
+    default: qa-1
+    values:
+      - qa-1
+      - qa-2
+      - qa-3
+      - qa-4
+
+variables:
+  acrName: "lsgacr"
+  aksResourceGroup: "lsg-aks-group"
+  aksClusterName: "lsg-aks"
+  dockerImage: "nexus-api"
+  solutionPath: "src/WebApi"
+  terraformWorkingDir: "infra"
+  imageTag: "1.0.$(Build.BuildId)" # Dynamically set the image tag
+
+stages:
+  - stage: Build
+    displayName: "Build and Package"
+    jobs:
+      - job: Build
+        displayName: "Build Application"
+        steps:
+          - task: UseDotNet@2
+            inputs:
+              version: "9.0.x"
+              includePreviewVersions: true
+
+          - template: templates/set-variables.yml
+          - template: templates/build-solution.yml
+            parameters:
+              solutionPath: "$(solutionPath)"
+
+  - stage: Deploy
+    displayName: "Deploy Environment"
+    variables:
+      - group: CoreAPI_QA
+    jobs:
+      - job: DeployToQA
+        displayName: "Deploy to AKS (QA)"
+        steps:
+          - template: templates/set-variables.yml
+          - template: templates/build-push-image-qa.yml
+            parameters:
+              environment: "qa"
+              envname: ${{ parameters.testenvname }}
+          - template: templates/deploy-aks-qa.yml
+            parameters:
+              environment: "qa"
+              envname: ${{ parameters.testenvname }}
