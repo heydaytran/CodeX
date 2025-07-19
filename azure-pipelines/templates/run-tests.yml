@@ -1,0 +1,8 @@
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Run - L0 Tests
+    inputs:
+      command: "test"
+      projects: "**/.*csproj"
+      arguments: '--collect:"XPlat Code Coverage" --settings:$(Build.SourcesDirectory)\build\codecoverage.runsettings'
+      publishTestResults: true

@@ -1,0 +1,6 @@
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Build - Project - ${{ parameters.solutionPath }}
+    inputs:
+      command: "build"
+      workingDirectory: "$(Build.SourcesDirectory)/${{ parameters.solutionPath }}"

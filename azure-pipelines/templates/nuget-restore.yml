@@ -1,0 +1,6 @@
+steps:
+  - task: NuGetCommand@2
+    displayName: Nuget Restore
+    inputs:
+      command: restore
+      restoreSolution: "**/*.sln"

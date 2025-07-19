@@ -1,0 +1,17 @@
+steps:
+  - script: |
+      echo "Environment: ${{ parameters.environment }}"
+    displayName: "Validate Variables"
+
+  - script: |
+      sed -i 's|IMAGE_PLACEHOLDER|$(acrName).azurecr.io/$(dockerImage)-${{ parameters.environment }}:$(Build.BuildNumber)|g' azure-pipelines/k8s/${{ parameters.environment }}/deployment.yaml
+    displayName: "Update Deployment YAML with Image"
+
+  - task: Kubernetes@1
+    displayName: "Deploy to AKS"
+    inputs:
+      connectionType: "Kubernetes Service Connection"
+      kubernetesServiceEndpoint: "lsg-aks-${{ parameters.environment }}"
+      namespace: "${{ parameters.environment }}"
+      command: "apply"
+      arguments: "-f azure-pipelines/k8s/${{ parameters.environment }}/"

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Persistence\Persistence.csproj" />
+      <ProjectReference Include="..\Modules.Customer.Application\Modules.Customer.Application.csproj" />
+      <ProjectReference Include="..\Modules.Customer.Domain\Modules.Customer.Domain.csproj" />
+      <ProjectReference Include="..\Modules.Customer.Endpoints\Modules.Customer.Endpoints.csproj" />
+      <ProjectReference Include="..\Modules.Customer.Migrator\Modules.Customer.Migrator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    </ItemGroup>
+</Project>

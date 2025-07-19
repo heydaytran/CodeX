@@ -1,0 +1,15 @@
+﻿global using ErrorOr;
+global using FluentValidation;
+global using FluentValidation.Results;
+global using MassTransit;
+global using MediatR;
+global using Microsoft.Extensions.Caching.Distributed;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
+global using System.Diagnostics;
+global using System.Reflection;
+global using System.Security.Claims;
+global using System.Security.Principal;
+global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;

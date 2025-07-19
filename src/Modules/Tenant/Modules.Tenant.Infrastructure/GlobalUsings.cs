@@ -1,0 +1,17 @@
+﻿global using ErrorOr;
+global using FluentValidation;
+global using HealthChecks.AzureStorage;
+global using MediatR;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Diagnostics.HealthChecks;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
+global using System.Net;
+global using System.Net.Sockets;
+global using System.Reflection;
+global using System.ServiceModel;
+global using System.Text.Json;
+global using Infrastructure.Configuration;
+global using Infrastructure.Extensions;

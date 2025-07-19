@@ -1,0 +1,7 @@
+steps:
+  - task: FileTransform@1
+    displayName: "File transformation: appsettings.json"
+    inputs:
+      folderPath: "$(Build.SourcesDirectory)/$(solutionPath)"
+      targetFiles: "**/appsettings.json"
+      fileType: json

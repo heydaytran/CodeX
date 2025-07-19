@@ -1,0 +1,14 @@
+﻿global using ErrorOr;
+global using MassTransit;
+global using Microsoft.AspNetCore.Diagnostics;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.OutputCaching;
+global using Microsoft.AspNetCore.OutputCaching.StackExchangeRedis;
+global using Microsoft.Extensions.Caching.StackExchangeRedis;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
+global using Microsoft.Net.Http.Headers;
+global using Scrutor;
+global using System.Reflection;

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.Azure.Storage.Queues" />
+        <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="System.ServiceModel.Http" />
+        <PackageReference Include="System.ServiceModel.NetTcp" />
+        <PackageReference Include="System.ServiceModel.Primitives" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\Modules.Identity.Domain\Modules.Identity.Domain.csproj" />
+      <ProjectReference Include="..\Modules.Identity.Endpoints\Modules.Identity.Endpoints.csproj" />
+      <ProjectReference Include="..\Modules.Identity.Persistence\Modules.Identity.Persistence.csproj" />
+    </ItemGroup>
+</Project>
