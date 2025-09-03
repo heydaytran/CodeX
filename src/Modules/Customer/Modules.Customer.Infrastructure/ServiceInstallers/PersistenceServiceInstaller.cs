@@ -1,6 +1,7 @@
 namespace Modules.Customer.Infrastructure.ServiceInstallers;
 using Domain.Abstractions;
 using Modules.Customer.Infrastructure.Repository;
+using Modules.Customer.Persistence;
 
 internal sealed class PersistenceServiceInstaller : IServiceInstaller
 {
@@ -18,6 +19,16 @@ internal sealed class PersistenceServiceInstaller : IServiceInstaller
                 {
                     npgsqlOptions.UseRelationalNulls();
                 }).AddInterceptors(interceptor);
+            })
+            .AddDbContext<CustomerReadDbContext>((serviceProvider, options) =>
+            {
+                var connectionString = serviceProvider
+                    .GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
+
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                {
+                    npgsqlOptions.UseRelationalNulls();
+                });
             })
             .AddScoped<ICustomerRepository, CustomerRepository>();
 
