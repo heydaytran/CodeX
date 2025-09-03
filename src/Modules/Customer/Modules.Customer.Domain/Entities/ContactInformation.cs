@@ -1,5 +1,5 @@
-﻿using Domain.Primitives;
-
+using Domain.Primitives;
+using System.Text.Json.Serialization;
 
 namespace Modules.Customer.Domain.Entities;
 
@@ -15,7 +15,8 @@ public sealed class ContactInformation : Entity<Guid>
     public string Postcode { get; set; } = string.Empty;
     public string County { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
-    public Customer Customer { get; set; } = null!;
 
+    [JsonIgnore]
+    public Customer Customer { get; set; } = null!;
 }
 

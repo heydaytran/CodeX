@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Persistence.Extensions;
 using Modules.Customer.Domain.Entities;
+using Modules.Customer.Persistence.Entities;
 
 namespace Modules.Customer.Persistence;
 
@@ -17,6 +18,7 @@ public class CustomerDbContext: DbContext
 
     public DbSet<ContactInformation> ContactInformations => Set<ContactInformation>();
     public DbSet<Domain.Entities.Customer> Customers => Set<Domain.Entities.Customer>();
+    public DbSet<CustomerEvent> CustomerEvents => Set<CustomerEvent>();
     
     /// <inheritdoc />
     protected override void OnModelCreating(
