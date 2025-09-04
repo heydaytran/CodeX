@@ -7,7 +7,7 @@ using Modules.Customer.Persistence.ReadModels;
 
 namespace Modules.Customer.Application.Projections;
 
-public sealed class CustomerReadModelProjection :
+public sealed class CustomerProfileProjection :
     INotificationHandler<ICommittedDomainEvent<CustomerCreatedDomainEvent>>,
     INotificationHandler<ICommittedDomainEvent<CustomerDetailsUpdatedDomainEvent>>,
     INotificationHandler<ICommittedDomainEvent<CustomerPreferencesUpdatedDomainEvent>>,
@@ -15,7 +15,7 @@ public sealed class CustomerReadModelProjection :
 {
     private readonly CustomerReadDbContext _dbContext;
 
-    public CustomerReadModelProjection(CustomerReadDbContext dbContext)
+    public CustomerProfileProjection(CustomerReadDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -35,22 +35,6 @@ public sealed class CustomerReadModelProjection :
             SmsNotificationsEnabled = e.SmsNotificationsEnabled
         });
 
-        _dbContext.CustomerNotificationPreferences.Add(new CustomerNotificationPreferencesReadModel
-        {
-            CustomerId = e.CustomerId,
-            EmailNotificationsEnabled = e.EmailNotificationsEnabled,
-            SmsNotificationsEnabled = e.SmsNotificationsEnabled
-        });
-
-        _dbContext.CustomerChanges.Add(new CustomerChangeReadModel
-        {
-            Id = Guid.NewGuid(),
-            CustomerId = e.CustomerId,
-            Version = 1,
-            Type = nameof(CustomerCreatedDomainEvent),
-            OccurredOnUtc = e.OccurredOnUtc
-        });
-
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -67,21 +51,6 @@ public sealed class CustomerReadModelProjection :
             profile.Email = e.ContactInformation.Email;
         }
 
-        var version = await _dbContext.CustomerChanges
-            .Where(c => c.CustomerId == e.CustomerId)
-            .OrderByDescending(c => c.Version)
-            .Select(c => c.Version)
-            .FirstOrDefaultAsync(cancellationToken) + 1;
-
-        _dbContext.CustomerChanges.Add(new CustomerChangeReadModel
-        {
-            Id = Guid.NewGuid(),
-            CustomerId = e.CustomerId,
-            Version = version,
-            Type = nameof(CustomerDetailsUpdatedDomainEvent),
-            OccurredOnUtc = e.OccurredOnUtc
-        });
-
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -96,28 +65,6 @@ public sealed class CustomerReadModelProjection :
             profile.SmsNotificationsEnabled = e.SmsNotificationsEnabled;
         }
 
-        var prefs = await _dbContext.CustomerNotificationPreferences.FirstOrDefaultAsync(p => p.CustomerId == e.CustomerId, cancellationToken);
-        if (prefs is not null)
-        {
-            prefs.EmailNotificationsEnabled = e.EmailNotificationsEnabled;
-            prefs.SmsNotificationsEnabled = e.SmsNotificationsEnabled;
-        }
-
-        var version = await _dbContext.CustomerChanges
-            .Where(c => c.CustomerId == e.CustomerId)
-            .OrderByDescending(c => c.Version)
-            .Select(c => c.Version)
-            .FirstOrDefaultAsync(cancellationToken) + 1;
-
-        _dbContext.CustomerChanges.Add(new CustomerChangeReadModel
-        {
-            Id = Guid.NewGuid(),
-            CustomerId = e.CustomerId,
-            Version = version,
-            Type = nameof(CustomerPreferencesUpdatedDomainEvent),
-            OccurredOnUtc = e.OccurredOnUtc
-        });
-
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -131,27 +78,7 @@ public sealed class CustomerReadModelProjection :
             _dbContext.CustomerProfiles.Remove(profile);
         }
 
-        var prefs = await _dbContext.CustomerNotificationPreferences.FirstOrDefaultAsync(p => p.CustomerId == e.CustomerId, cancellationToken);
-        if (prefs is not null)
-        {
-            _dbContext.CustomerNotificationPreferences.Remove(prefs);
-        }
-
-        var version = await _dbContext.CustomerChanges
-            .Where(c => c.CustomerId == e.CustomerId)
-            .OrderByDescending(c => c.Version)
-            .Select(c => c.Version)
-            .FirstOrDefaultAsync(cancellationToken) + 1;
-
-        _dbContext.CustomerChanges.Add(new CustomerChangeReadModel
-        {
-            Id = Guid.NewGuid(),
-            CustomerId = e.CustomerId,
-            Version = version,
-            Type = nameof(CustomerDeletedDomainEvent),
-            OccurredOnUtc = e.OccurredOnUtc
-        });
-
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+
